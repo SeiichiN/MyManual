@@ -14,22 +14,12 @@
         <article>
             <?php
             function divnum($a, $b){
-                try {
-				    $c = $a / $b;
-                } catch (Exception $e) {
-                    $c = "計算できません。{$e->getMessage()} <br>\n";
-                }
+				set_error_handler("myErrorSyori");
+				
+				$c = $a / $b;
 				return $c;
             }
-            function mySyori() {
-                throw new ErrorException('無理っス!');
-            }
-            function myErrorSyori($errcode, $msg, $file, $line) {
-                throw new ErrorException($msg, 0, $errcode, $file, $line);
-            }
-            
-//			set_error_handler("myErrorSyori");
-			set_error_handler("mySyori");
+
             $x = ($_POST['left']);
             $y = ($_POST['right']);
             $z = divnum($x, $y);
