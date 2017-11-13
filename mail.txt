@@ -1,0 +1,13 @@
+php.ini
+
+1062 sendmail_path = "D:\xampp\sendmail\sendmail.exe -t"
+
+
+D:\xampp\sendmail\sendmain.ini
+
+14 smtp_server=smtp.gmail.com
+
+18 smtp_port=587
+
+46 auth_username=kuon5505@gmail.com
+47 auth_password=r@09m17C
