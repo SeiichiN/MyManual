@@ -1,0 +1,16 @@
+@charset "utf-8";
+
+table {
+    margin-bottom: 10px;
+    border-collapse: collapse;
+    width: 30%;
+}
+table, th, td {
+    border: 2px solid #c0c0c0;
+}
+.ans {
+    width: 20%;
+}
+.errMsg {
+    color: red;
+}
