@@ -38,6 +38,6 @@
     }
     
     ?>
-    <p><a href="upform.html">もどる</a></p>
+    <p><a href="myupform.html">もどる</a></p>
 </body>
 </html>
