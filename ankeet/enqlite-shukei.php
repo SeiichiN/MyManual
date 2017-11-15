@@ -1,6 +1,4 @@
 <?php
-define ('DEBUG', 0);
-
 $db_name = './db/enq.db';  // データベース名
 
 // 配列を作成する
@@ -13,9 +11,6 @@ $enq3 = array('秘密', '男性', '女性');
 
 // ファイルが存在するか確認する
 $ext = file_exists($db_name);
-
-if(DEBUG) { echo '$ext= '; var_dump($ext); echo '<br>';}
-
 
 // データベースが存在しないとき
 if (!$ext) {
@@ -37,13 +32,6 @@ for ($i = 0; $i < count($enq3); $i++)
 $db = new SQLite3($db_name);
 $result = $db->query("select * from enq");;
 
-if(DEBUG) {
-	while ($cols = $result->fetchArray(SQLITE3_ASSOC)) {
-		print_r($cols);
-		echo '<br>';
-	}
-}
-    
 while ($cols = $result->fetchArray(SQLITE3_ASSOC)) {
 	$toi1 = $cols['ans11'];
 	$res1[$toi1]++;
@@ -57,8 +45,6 @@ while ($cols = $result->fetchArray(SQLITE3_ASSOC)) {
 }
 
 $db->close();
-
-if(DEBUG) print_r($res1);
 
 // 集計表を作成する
 ?>

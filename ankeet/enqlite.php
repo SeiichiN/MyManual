@@ -1,6 +1,4 @@
 <?php
-define ('DEBUG', 0);
-
 $db_name = './db/enq.db';  // データベース名
 
 // 配列を作成する
@@ -14,17 +12,8 @@ $enq3 = array('秘密', '男性', '女性');
 // ファイルが存在するか確認する
 $ext = file_exists($db_name);
 
-if(DEBUG) { echo '$ext= '; var_dump($ext); echo '<br>';}
-
 // 送信ボタンが押された時
 if (isset($_POST['submit']) && isset($_POST['ques1']) && isset($_POST['ques2'])) {
-
-    if(DEBUG) echo '送信ボタンをキャッチ！<br>';
-
-    if(DEBUG) echo "問１= {$_POST['ques1']} <br>";
-    if(DEBUG) { echo "問２= "; print_r($_POST['ques2']); echo "<br>"; }
-    if(DEBUG) echo "問３= {$_POST['sex']} <br>";
-
 	$db = new SQLite3($db_name);  // データベースを開く
 
 	// ファイルがなければ、データベース・テーブルを作成する
@@ -56,8 +45,8 @@ if (isset($_POST['submit']) && isset($_POST['ques1']) && isset($_POST['ques2']))
 	// データベースを閉じる
 	$db->close();
 }
-
 ?>
+
 <!DOCTYPE html>
 <html lang="ja">
     <head>
