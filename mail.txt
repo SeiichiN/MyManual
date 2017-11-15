@@ -1,0 +1,109 @@
+XAMPP の PHP7 の mb_send_mail でメール発信
+
+PHP7 には mb_send_mail があるが、これを使ってメールを送信してみる。
+
+Webサイトを設置するサーバーが、指定したSMTPサーバにメールを送信して
+くれるならばということになるかな。
+
+もし、それがだめなら、PHPから直接SMTPサーバにメールを飛ばさねばならない。
+
+その場合は、''PHPMailer'' というのがあるらしい。
+
+[[PHPMailer で GMail 送信|http://airwhite.net/?p=764]]
+
+これについては、また機会があればやってみたい。
+
+さて、PHPでのメール発信だが、
+『PHPの絵本・第2版』p198には、以下の記述がある。
+
+<<<
+php.iniで以下の設定をしておく必要があります。
+SMTP = mail.xxx.CO.JP    <-- メール送信サーバー名を指定します。
+sendmail_from = PHP@ank.co.jp    <-- 送信元のメールアドレスを指定します。
+php.iniを設定したら、Apacheを再起動します。
+>>>
+
+こんな簡単なものなのか？
+
+ログイン認証とかいらんのか？
+
+だれのメールでも受け付けてくれるSMTPサーバなんか、今どきないやろ。
+
+・・・ということで、以下の設定をした。
+
+!!!! php.ini
+
+''php.ini''
+<<<
+1062 sendmail_path = "D:\xampp\sendmail\sendmail.exe -t"
+>>>
+
+ここの設定については、PHPマニュアルに以下の記述があった。
+
+<<<
+sendmail_path
+
+このディレクティブは Windows 環境でも動作します。指定された場合は smtp および smtp_port・ sendmail_from の値は無視され、 ここで指定したコマンドが実行されます。 
+>>>
+[[PHPマニュアル > 関数リファレンス > メール関連 > メール > インストール設定 > 実行時設定|http://php.net/manual/ja/mail.configuration.php#ini.sendmail-path]]
+
+!!!! sendmail.ini
+
+このファイルにSMTPサーバについての情報を記述する。
+
+以下の内容でおこなった。
+
+''D:\xampp\sendmail\sendmain.ini''
+<<<
+14 smtp_server=smtp.gmail.com
+
+18 smtp_port=587
+
+46 auth_username=（僕のGMailアドレス）
+47 auth_password=（パスワード）
+>>>
+
+もちろん、2段階認証を使っていたら、これはできない。
+
+これで、apacheを再起動すればＯＫ。
+
+!!!! 確認用メール
+
+以下のPHPスクリプトで実験した。
+
+<<<
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <title>PHP</title>
+    </head>
+    <body>
+    	<?php
+	        $header = "From:" . mb_encode_mimeheader("ぼくの名前") . "<（アカウント）@gmail.com>";
+	        $mailto = "（もうひとつのアカウント）@gmail.com";
+	        $subject = "メールの実験";
+	        $message = "メールテスト\r\nうまくいけたかな？";
+
+            if(mb_send_mail($mailto, $subject, $message, $header)) {
+                print " 送信しました。";
+            } else {
+                print " 送信エラー";
+            }
+        ?>
+        <hr>
+    </body>
+</html>
+>>>
+
+!!!! 動作環境
+ Windows10 64bit
+ XAMPP 7.11 PHP7.1.11
+
+!!! 参考
+
+*[[PHP Sendmail Failed in windows xampp|https://stackoverflow.com/questions/28532476/php-sendmail-failed-in-windows-xampp]]
+
+*[[XAMPPからgmailのsmtpサーバーを使ってメールを送る|http://stmemo.herokuapp.com/memos/122]]
+
+----
