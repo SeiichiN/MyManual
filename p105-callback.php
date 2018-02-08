@@ -19,11 +19,11 @@
             function kakeru($a, $b) {
                 return $a * $b;
             }
-            function dousuru(callable $f, $x, $y){
+	        function dousuru($x, $y, callable $f){
                 print $f($x, $y);
             }
 
-            dousuru("kakeru", 3, 5);
+	        dousuru(3, 5, "plus");
             ?>
 
             
