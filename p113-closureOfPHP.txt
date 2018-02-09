@@ -1,0 +1,135 @@
+クロージャについて、あれこれ考えてみた。(2018/02/08)
+
+
+クロージャでよく使われる例
+================================================================
+<?php
+// 引用元：「PHPでクロージャーを使う」
+// https://qiita.com/tricogimmick/items/3e344486658e3cfbd407
+
+function create_counter() {
+    $count = 0;
+    return function() use(&$count) {
+        return ++$count;
+    };
+}
+
+$counter = create_counter();
+echo $counter();  // 1
+echo $counter();  // 2
+echo $counter();  // 3
+echo $counter();  // 4
+?>
+================================================================
+
+しかしこれは、以下のstatic変数を使えるじゃないかという疑問が残る。
+
+================================================================
+<?php
+function plus() {
+	static $count = 0;
+	$count++;
+	return $count;
+}
+
+echo plus();  // 1
+echo plus();  // 2
+echo plus();  // 3
+echo plus();  // 4
+================================================================
+
+でも、次のように、配列と関数を引数にとる高階関数 my_array_walk を
+例にとるとなるほどと思う。
+
+クロージャのわかりやすい例
+================================================================
+<?php
+// 独習PHP 第3版 p246
+
+/*
+ * my_array_walk -- 配列に対していろんな処理をおこなう
+ * 引数 -- $array（配列）
+ *         $func （関数）配列の個々の要素に処理をおこなう
+ */
+function my_array_walk(array $array, callable $func) {
+	foreach( $array as $key => $value ) {
+		$func($value, $key);
+	}
+}
+
+$data = [100, 50, 10, 5];
+
+$result = 0;
+
+// my_array_walk に対して、配列data と、無名関数をわたしている。
+// 無名関数は、引数を2つとる。配列の添字と値。
+// それ以外に無名関数にuse命令で、結果を保持する$resultの参照を
+// わたしている。
+my_array_walk( $data, function(int $v, int $k) use (&$result) {
+		$result += $v;
+	});
+
+print "合計値：($result)";
+?>
+================================================================
+配列の要素それぞれを引数にとり、その要素を合計していく無名関数を考える。
+こうすると、無名関数には引数（$keyと$value）が与えられるが、それ以外に
+useで無名関数の外の変数の参照をあたえなければならないことがよくわかる。
+
+
+次の例は、PHPマニュアルに載っていたものである。これもわかりやすい。
+================================================================
+<?php
+
+class Cart
+{
+    const PRICE_BUTTER = 1.00;
+    const PRICE_MILK   = 3.00;
+    const PRICE_EGGS   = 6.95;
+
+    protected $products = array();
+
+    public function add ($product, $quantity)
+    {
+        $this->products[$product] = $quantity;
+    }
+
+    public function getQuantity($product)
+    {
+        return isset($this->products[$product]) ? $this->products[$product] : FALSE;
+    }
+
+    public function getTotal($tax)
+    {
+        $total = 0.00;
+
+        // $tax -- 親関数の引数を使うが、値の変更はしない
+        // &$total -- 合計を保持。値の変更を行うので参照渡しである
+        $callback = function($quantity, $product) use ($tax, &$total)
+        {
+                            // Cart::PRICE_BTTER
+            $pricePerItem = constant(__CLASS__ . "::PRICE_"
+                                     . strtoupper($product));
+            var_dump($pricePerItem);
+            $total += ($pricePerItem * $quantity) * ($tax + 1.0);
+        };
+
+        array_walk($this->products, $callback);
+        return round($total, 2);
+    }
+}
+
+$my_cart = new Cart;
+
+// カートに商品を追加する
+$my_cart->add('butter', 1);
+$my_cart->add('milk', 3);
+$my_cart->add('eggs', 6);
+
+// 合計に消費税 5% を付加した金額を表示します
+print $my_cart->getTotal(0.05) . "\n";
+
+// 結果は 54.29 です。
+?>
+================================================================
+
