@@ -39,9 +39,12 @@ $email = !empty($_POST['email']) ? $_POST['email'] : '空です';
 
             if (preg_match(TEL_PATTERN, $tel, $teldata)) {
                 print "入力ＯＫ -- ";
+                print $teldata[0];
+                /*
                 foreach( $teldata as $telstr ) {
                     print " | $telstr ";
                 }
+                */
                 print "<br>";
             }
             else {
@@ -51,9 +54,12 @@ $email = !empty($_POST['email']) ? $_POST['email'] : '空です';
 
             if (preg_match(URL_PATTERN, $url, $urldata)) {
                 print "入力ＯＫ -- ";
+                print $urldata[0];
+                /*
                 foreach( $urldata as $urlstr ) {
                     print " | $urlstr ";
                 }
+                */
                 print "<br>";
             }
             else {
@@ -63,9 +69,12 @@ $email = !empty($_POST['email']) ? $_POST['email'] : '空です';
             
             if (preg_match(EMAIL_PATTERN, $email, $emaildata)) {
                 print "入力ＯＫ -- ";
+                print $emaildata[0];
+                /*
                 foreach( $emaildata as $emailstr ) {
                     print " | $emailstr ";
                 }
+                */
                 print "<br>";
             }
             else {
